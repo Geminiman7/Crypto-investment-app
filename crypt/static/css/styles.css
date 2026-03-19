@@ -1,0 +1,489 @@
+body {
+  background: #0e1117;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-container {
+  background: #0e1117;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nav-container a {
+  color: #f2c94c;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 20px;
+}
+.nav-container ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+.nav-container ul li a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.nav-container ul li a:hover {
+  color: #f2c94c;
+}
+
+.container {
+  padding: 40px 10%;
+}
+
+/* Hero Section */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 80px 10%;
+  background: linear-gradient(to right, #141824, #0e1117);
+  flex-wrap: wrap;
+}
+.hero-text {
+  flex: 1;
+  min-width: 280px;
+}
+.hero-text h1 {
+  font-size: 40px;
+  color: #f2c94c;
+  margin-bottom: 10px;
+}
+.hero-text p {
+  font-size: 18px;
+  color: #ccc;
+}
+.hero-img {
+  flex: 1;
+  text-align: center;
+}
+.hero-img img {
+  max-width: 300px;
+}
+
+/* CTA Button */
+.cta-btn {
+  display: inline-block;
+  background: linear-gradient(135deg, #f2c94c, #f2994a);
+  color: #000;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-top: 20px;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+.cta-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Features Section */
+.features {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 60px 10%;
+  background-color: #11141c;
+}
+.feature {
+  background-color: #1c1f26;
+  padding: 30px;
+  border-radius: 10px;
+  margin: 15px;
+  flex: 1;
+  min-width: 260px;
+  max-width: 300px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+.feature h3 {
+  color: #f2c94c;
+  margin-bottom: 10px;
+}
+.feature p {
+  color: #ccc;
+}
+.feature:hover {
+  transform: translateY(-5px);
+}
+
+/* Flash Messages */
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+.alert-success {
+  background-color: #2ecc71;
+  color: white;
+}
+.alert-error {
+  background-color: #e74c3c;
+  color: white;
+}
+.live-prices, .market-overview {
+  margin-top: 60px;
+  padding: 40px 10%;
+  background-color: #11141c;
+  border-radius: 12px;
+}
+
+.live-prices h2, .market-overview h2 {
+  color: #f2c94c;
+  margin-bottom: 20px;
+  font-size: 28px;
+  text-align: center;
+}
+/* General Body Styles - Apply these to the whole application */
+body {
+    background-color: #121212; /* Dark background */
+    color: #f1f1f1; /* Light text for general content */
+    font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif; /* Modern, readable font with a fallback */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Ensures padding and borders are included in element's total width/height */
+    line-height: 1.6; /* Improved readability for body text */
+}
+
+/* Links */
+a {
+    color: #f9c100; /* Gold accent for links */
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #ffda47; /* Lighter gold on hover */
+    text-decoration: underline;
+}
+
+/* Headings (if not already defined by specific page styles) */
+h1, h2, h3, h4, h5, h6 {
+    color: #f9c100; /* Gold accent for headings */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600; /* Slightly bolder for emphasis */
+}
+
+/* Main Header/Navigation Bar */
+.main-header {
+    background-color: #1e1e1e; /* Darker background for header */
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Subtle shadow below header */
+    border-bottom: 1px solid #333; /* Separator line */
+    position: sticky; /* Sticky header */
+    top: 0;
+    z-index: 1000; /* Ensure header stays on top */
+}
+
+.header-container {
+    max-width: 1200px; /* Max width for content inside header */
+    margin: 0 auto;
+    padding: 0 25px; /* Padding on sides */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.site-logo {
+    color: #f9c100; /* Gold for logo/brand name */
+    font-size: 28px; /* Larger font size for brand */
+    font-weight: 700; /* Bold */
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: color 0.2s ease;
+}
+
+.site-logo:hover {
+    color: #ffda47;
+}
+
+.main-nav .nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Display links in a row */
+    align-items: center;
+}
+
+.main-nav .nav-links li {
+    margin-left: 30px; /* Space between nav items */
+}
+
+.main-nav .nav-links a {
+    color: #f1f1f1; /* Light text for nav links */
+    text-decoration: none;
+    font-weight: 600; /* Semi-bold */
+    font-size: 16px;
+    padding: 8px 0; /* Add some vertical padding for click area */
+    transition: color 0.2s ease, border-bottom 0.2s ease;
+    border-bottom: 2px solid transparent; /* Transparent border for hover effect */
+}
+
+.main-nav .nav-links a:hover,
+.main-nav .nav-links a.active { /* Active state for current page (add this in Jinja if possible) */
+    color: #f9c100;
+    border-bottom-color: #f9c100; /* Gold underline on hover/active */
+    text-decoration: none; /* Remove default underline */
+}
+
+/* Authentication Buttons in Nav */
+.auth-action .button {
+    padding: 8px 18px; /* Button padding */
+    border-radius: 6px; /* Rounded corners for buttons */
+    font-weight: bold;
+    font-size: 15px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+    display: inline-block; /* Ensure padding works */
+}
+
+.auth-action .button.primary {
+    background-color: #f9c100; /* Gold button */
+    color: #1e1e1e; /* Dark text on gold */
+    border: 2px solid #f9c100;
+}
+
+.auth-action .button.primary:hover {
+    background-color: #ffda47;
+    border-color: #ffda47;
+    transform: translateY(-2px);
+    color: #1e1e1e;
+}
+
+.auth-action .button.secondary {
+    background-color: transparent; /* Transparent button */
+    color: #f9c100; /* Gold text */
+    border: 2px solid #f9c100;
+    margin-left: 10px; /* Space between buttons */
+}
+
+.auth-action .button.secondary:hover {
+    background-color: #f9c100; /* Gold background on hover */
+    color: #1e1e1e; /* Dark text on hover */
+    transform: translateY(-2px);
+}
+
+
+/* Hamburger Menu Icon (hidden by default on desktop) */
+.menu-toggle {
+    display: none; /* Hide the checkbox */
+}
+
+.menu-icon {
+    display: none; /* Hidden by default */
+    font-size: 30px;
+    color: #f9c100;
+    cursor: pointer;
+}
+
+/* Main Content Wrapper */
+.content-wrapper {
+    max-width: 1200px; /* Consistent max width with header */
+    margin: 40px auto; /* Margin top/bottom and auto for centering */
+    padding: 0 25px; /* Padding on sides, consistent with header */
+    min-height: calc(100vh - 180px); /* Ensure content pushes footer down, adjust 180px based on header/footer height */
+}
+
+/* Flash Messages */
+.flash-messages-container {
+    margin-bottom: 30px; /* Space below messages */
+    text-align: center; /* Center messages */
+}
+
+.alert {
+    padding: 15px 25px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #1e1e1e; /* Dark text for alerts */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display: inline-block; /* Allow centering */
+    max-width: 600px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.alert-success {
+    background-color: #4CAF50; /* Green for success */
+}
+
+.alert-error, .alert-danger { /* Use danger for critical errors */
+    background-color: #F44336; /* Red for errors */
+}
+
+.alert-info {
+    background-color: #2196F3; /* Blue for info */
+}
+
+.alert-warning {
+    background-color: #ffc107; /* Orange for warnings */
+}
+
+
+/* Footer */
+.main-footer {
+    background-color: #1e1e1e;
+    padding: 30px 0;
+    border-top: 1px solid #333;
+    color: #ccc;
+    font-size: 14px;
+    text-align: center;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 25px;
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-container p {
+    margin: 0;
+    flex-basis: 100%; /* Take full width on small screens */
+    margin-bottom: 15px;
+}
+
+.footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-grow: 1; /* Allow links to take available space */
+}
+
+.footer-links li {
+    margin: 0 15px;
+}
+
+.footer-links a {
+    color: #ccc;
+    font-weight: 500;
+}
+
+.footer-links a:hover {
+    color: #f9c100;
+}
+
+.social-icons {
+    margin-top: 15px; /* Space above social icons on small screens */
+    flex-basis: 100%;
+    text-align: center;
+}
+
+/* Responsive Design for Navigation */
+@media (max-width: 992px) {
+    .main-nav .nav-links li {
+        margin-left: 20px; /* Reduce spacing slightly */
+    }
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        flex-wrap: wrap; /* Allow logo and nav to wrap */
+        justify-content: space-between;
+    }
+
+    .main-nav {
+        order: 3; /* Push nav to a new line */
+        width: 100%;
+        margin-top: 15px; /* Space between logo/icon and nav */
+    }
+
+    .main-nav .nav-links {
+        flex-direction: column; /* Stack nav links vertically */
+        background-color: #2b2b2b; /* Darker background when open */
+        width: 100%;
+        position: absolute; /* Position relative to .main-nav for dropdown */
+        left: 0;
+        top: 100%; /* Position below the header */
+        padding: 20px 0;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.6);
+        max-height: 0; /* Initially hidden */
+        overflow: hidden;
+        transition: max-height 0.3s ease-out; /* Smooth slide effect */
+        align-items: flex-start; /* Align text to left */
+    }
+
+    .main-nav .nav-links li {
+        margin: 0; /* Remove horizontal margins */
+        width: 100%;
+    }
+
+    .main-nav .nav-links a {
+        padding: 12px 25px; /* Increase click area and add left padding */
+        border-bottom: none; /* Remove underline on mobile */
+        width: 100%; /* Full width link */
+        box-sizing: border-box;
+    }
+
+    .main-nav .nav-links a:hover,
+    .main-nav .nav-links a.active {
+        background-color: #3a3a3a; /* Darker background on hover */
+        color: #f9c100;
+    }
+
+    /* Show hamburger icon */
+    .menu-icon {
+        display: block;
+    }
+
+    /* When checkbox is checked, show the nav links */
+    .menu-toggle:checked + .menu-icon + .nav-links {
+        max-height: 500px; /* Adjust as needed to fit all links */
+    }
+
+    /* Auth buttons stacking */
+    .auth-action {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px; /* Space between stacked buttons */
+    }
+    .auth-action .button {
+        display: block; /* Make them block level to stack */
+        width: calc(100% - 50px); /* Take full width minus padding */
+        margin: 0 auto 10px auto; /* Center and add space below */
+    }
+    .auth-action .button.secondary {
+        margin-left: auto; /* Override previous margin-left */
+    }
+
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .footer-container p,
+    .footer-links,
+    .social-icons {
+        margin-bottom: 15px;
+        flex-basis: 100%;
+    }
+    .footer-links li {
+        margin: 5px 10px; /* Adjust spacing for stacked links */
+    }
+}
+
+@media (max-width: 480px) {
+    .site-logo {
+        font-size: 24px;
+    }
+    .alert {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+    .header-container, .content-wrapper, .footer-container {
+        padding: 0 15px; /* Reduce side padding on very small screens */
+    }
+}

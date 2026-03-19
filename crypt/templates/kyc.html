@@ -1,0 +1,268 @@
+{% extends "layout.html" %}
+{% block title %}KYC Verification - Astro Trade Hub{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h1 class="auth-title">KYC Verification</h1>
+        <p class="auth-subtitle">Please upload your identification document to verify your account.</p>
+
+        <form method="POST" action="{{ url_for('kyc') }}" enctype="multipart/form-data" class="auth-form">
+            {{ form.hidden_tag() }} {# CSRF token, essential for security #}
+
+            <div class="form-group">
+                {{ form.document_type.label(class="form-label") }}
+                {{ form.document_type(class="form-select", required=True) }}
+                {% if form.document_type.errors %}
+                    <ul class="form-errors">
+                        {% for error in form.document_type.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.document.label(class="form-label") }}
+                {# The 'accept' attribute helps filter file types in the browser #}
+                {{ form.document(class="form-file-input", accept=".pdf,.jpg,.jpeg,.png", required=True) }}
+                <p class="file-input-hint">Accepted formats: PDF, JPG, PNG (Max 5MB)</p>
+                {% if form.document.errors %}
+                    <ul class="form-errors">
+                        {% for error in form.document.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            {# Display Flask flash messages (e.g., "Upload successful!") #}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <ul class="flash-messages">
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+            <button type="submit" class="button primary auth-button">Upload Document</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Re-using general auth styles from login/signup for consistency */
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - var(--header-height) - var(--footer-height));
+        padding: 40px 20px;
+        background-color: var(--background-color);
+    }
+
+    .auth-card {
+        background-color: var(--card-background-color);
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        padding: 50px 40px;
+        width: 100%;
+        max-width: 500px; /* Slightly wider for document upload */
+        text-align: center;
+        border: 1px solid var(--border-color);
+    }
+
+    .auth-title {
+        font-size: 36px;
+        color: var(--accent-color);
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .auth-subtitle {
+        font-size: 18px;
+        color: var(--text-color-light);
+        margin-bottom: 30px;
+        line-height: 1.5;
+    }
+
+    .auth-form {
+        width: 100%;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        text-align: left;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 16px;
+        color: var(--text-color-primary);
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    /* Styling for the select dropdown */
+    .form-select {
+        width: 100%;
+        padding: 14px 18px;
+        border: 1px solid var(--input-border-color);
+        border-radius: 8px;
+        background-color: var(--input-background-color);
+        color: var(--text-color-primary);
+        font-size: 17px;
+        appearance: none; /* Removes default OS styling */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg fill="%23f9c100" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Custom arrow */
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 20px;
+        cursor: pointer;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-select:focus {
+        border-color: var(--accent-color-dark);
+        box-shadow: 0 0 0 3px rgba(249, 193, 0, 0.3);
+        outline: none;
+    }
+
+    /* Styling for file input */
+    .form-file-input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 1px solid var(--input-border-color);
+        border-radius: 8px;
+        background-color: var(--input-background-color);
+        color: var(--text-color-primary);
+        font-size: 17px;
+        cursor: pointer;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Style the file input button, if possible across browsers */
+    .form-file-input::-webkit-file-upload-button {
+        background-color: var(--accent-color);
+        color: var(--text-color-dark);
+        border: none;
+        padding: 10px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-right: 15px;
+        transition: background-color 0.3s ease;
+    }
+
+    .form-file-input::-webkit-file-upload-button:hover {
+        background-color: var(--accent-color-dark);
+    }
+
+    /* Fallback for other browsers, if default button is not styled by accent-color */
+    .form-file-input:focus {
+        border-color: var(--accent-color-dark);
+        box-shadow: 0 0 0 3px rgba(249, 193, 0, 0.3);
+        outline: none;
+    }
+
+    .file-input-hint {
+        font-size: 14px;
+        color: var(--text-color-light);
+        margin-top: 5px;
+        text-align: left;
+    }
+
+
+    /* Shared styles (copied from login/signup for convenience, consider moving to styles.css) */
+    .form-errors {
+        list-style-type: none;
+        padding: 0;
+        margin-top: 8px;
+        color: #ff6b6b; /* Red for errors */
+        font-size: 14px;
+        text-align: left;
+    }
+    .form-errors li {
+        margin-bottom: 4px;
+    }
+
+    .flash-messages {
+        list-style-type: none;
+        padding: 10px 0;
+        margin-bottom: 20px;
+        text-align: center;
+        border-radius: 6px;
+    }
+    .flash-messages li {
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 500;
+    }
+    .flash-messages li.success {
+        background-color: #28a74533;
+        color: #28a745;
+        border: 1px solid #28a745;
+    }
+    .flash-messages li.error, .flash-messages li.danger {
+        background-color: #dc354533;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+    .flash-messages li.info {
+        background-color: #17a2b833;
+        color: #17a2b8;
+        border: 1px solid #17a2b8;
+    }
+
+    .auth-button {
+        width: 100%;
+        padding: 15px 25px;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .button.primary {
+        background-color: var(--accent-color);
+        color: var(--text-color-dark);
+        border: none;
+    }
+    .button.primary:hover {
+        background-color: var(--accent-color-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(249, 193, 0, 0.4);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .auth-card {
+            padding: 40px 25px;
+            margin: 0 15px;
+        }
+        .auth-title {
+            font-size: 30px;
+        }
+        .auth-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+        .form-input, .form-select, .form-file-input {
+            padding: 12px 15px;
+            font-size: 16px;
+        }
+        .auth-button {
+            padding: 14px 20px;
+            font-size: 16px;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,296 @@
+{% extends "layout.html" %}
+{% block title %}Withdraw Funds{% endblock %}
+
+{% block content %}
+<div class="withdraw-wrapper">
+    <main class="withdraw-main">
+        <h1>Withdraw Funds</h1>
+
+        <section class="withdraw-section request-withdrawal-card">
+            <h2>Request Withdrawal</h2>
+            <form method="POST" class="withdrawal-form">
+                <div class="form-group">
+                    <label for="currency">Currency:</label>
+                    <input type="text" id="currency" name="currency" required placeholder="e.g., BTC, ETH, USDT">
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" step="0.01" name="amount" required placeholder="Enter amount to withdraw">
+                </div>
+
+                <div class="form-group">
+                    <label for="wallet_address">Your Wallet Address:</label>
+                    <input type="text" id="wallet_address" name="wallet_address" required placeholder="Enter your withdrawal address">
+                </div>
+
+                <button type="submit" class="submit-button">Request Withdrawal</button>
+            </form>
+        </section>
+
+        <section class="withdraw-section withdrawal-history-card">
+            <h2>My Withdrawal History</h2>
+            {% if history %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Currency</th>
+                            <th>Amount</th>
+                            <th>Wallet Address</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for w in history %}
+                        <tr>
+                            <td>{{ w.currency }}</td>
+                            <td>{{ w.amount | round(8) }}</td> {# Display with 8 decimal places for crypto #}
+                            <td class="wallet-address-display">{{ w.wallet_address }}</td>
+                            <td>
+                                <span class="status-{{ w.status.lower() }}">
+                                    {% if w.status.lower() == 'pending' %}⏳
+                                    {% elif w.status.lower() == 'approved' %}✅
+                                    {% elif w.status.lower() == 'rejected' %}❌
+                                    {% elif w.status.lower() == 'processing' %}⚙️
+                                    {% endif %}
+                                    {{ w.status | capitalize }}
+                                </span>
+                            </td>
+                            <td>{{ w.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-data-message">No withdrawals found yet.</p>
+            {% endif %}
+        </section>
+    </main>
+</div>
+
+<style>
+    /* Inherit base styles from layout.html */
+    body {
+        background-color: #121212;
+        color: #f1f1f1;
+        font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    }
+
+    /* Main Wrapper for the Withdraw Page */
+    .withdraw-wrapper {
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px;
+        min-height: calc(100vh - 180px); /* Adjust based on header/footer height */
+    }
+
+    .withdraw-main {
+        flex: 1;
+        max-width: 900px; /* Consistent width with deposit page */
+        width: 100%;
+    }
+
+    h1 {
+        color: #f9c100;
+        font-size: 32px;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    h2 {
+        color: #f9c100;
+        font-size: 24px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 10px;
+        text-align: left;
+    }
+
+    /* Withdrawal Section Card Styling */
+    .withdraw-section {
+        background-color: #1e1e1e;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 30px; /* Space between sections */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .withdraw-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+    }
+
+    /* Withdrawal Form Styling */
+    .withdrawal-form {
+        margin-top: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #ccc;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"] {
+        width: calc(100% - 24px); /* Account for padding */
+        padding: 12px;
+        border: 1px solid #333;
+        border-radius: 6px;
+        background-color: #2b2b2b;
+        color: #f1f1f1;
+        font-size: 16px;
+        box-sizing: border-box; /* Include padding in width */
+    }
+
+    .form-group input::placeholder {
+        color: #888;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #f9c100;
+        box-shadow: 0 0 0 3px rgba(249, 193, 0, 0.3);
+    }
+
+    .submit-button {
+        display: block;
+        width: auto;
+        min-width: 180px;
+        margin-top: 25px;
+        background-color: #f9c100;
+        color: #1e1e1e;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 18px;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+        text-align: center;
+    }
+
+    .submit-button:hover {
+        background-color: #ffda47;
+        transform: translateY(-2px);
+    }
+
+    /* Withdrawal History Table Styling */
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 15px 20px;
+        text-align: left;
+        border-bottom: 1px solid #333;
+        color: #f1f1f1;
+    }
+
+    th {
+        background-color: #2b2b2b;
+        font-weight: normal;
+        color: #f9c100;
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    tbody tr:hover {
+        background-color: #282828;
+    }
+
+    .wallet-address-display {
+        font-family: 'Roboto Mono', 'Courier New', monospace; /* Monospace for addresses */
+        font-size: 0.95em;
+        background-color: #282828;
+        padding: 5px 10px;
+        border-radius: 5px;
+        word-break: break-all; /* Break long words */
+    }
+
+    /* Status Badges for Withdrawals */
+    .status-pending {
+        color: #f9c100; /* Yellow for pending */
+        font-weight: bold;
+    }
+    .status-approved {
+        color: #4CAF50; /* Green for approved */
+        font-weight: bold;
+    }
+    .status-rejected {
+        color: #F44336; /* Red for rejected */
+        font-weight: bold;
+    }
+    .status-processing {
+        color: #2196F3; /* Blue for processing */
+        font-weight: bold;
+    }
+
+    /* No Data Messages */
+    .no-data-message {
+        text-align: center;
+        padding: 20px;
+        color: #aaa;
+        font-style: italic;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .withdraw-wrapper {
+            padding: 20px 15px;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+        .withdraw-section {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+        }
+        .submit-button {
+            width: 100%; /* Full width button on small screens */
+            min-width: unset;
+        }
+        .wallet-address-display {
+            font-size: 0.85em; /* Smaller font for long addresses on small screens */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .wallet-address-display {
+            /* Further adjustment for extremely small screens */
+            font-size: 0.8em;
+            padding: 3px 8px;
+        }
+    }
+</style>
+{% endblock %}

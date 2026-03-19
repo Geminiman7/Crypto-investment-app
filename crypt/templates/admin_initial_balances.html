@@ -1,0 +1,347 @@
+{% extends "layout.html" %}
+{% block title %}Assign Balances to Users - Astro Trade Hub{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard-container">
+    <h1 class="admin-dashboard-title">Manage User Balances</h1>
+
+    <div class="admin-section-card"> {# Card for the form section #}
+        <h2 class="admin-section-heading">Assign Initial Balance to User</h2>
+
+        <form method="POST" class="admin-form"> {# Apply general form styling #}
+            <div class="form-group">
+                <label for="user_id" class="form-label">Select User:</label>
+                <select name="user_id" id="user_id" class="form-input form-select" required>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.email }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="currency" class="form-label">Currency:</label>
+                <input type="text" name="currency" id="currency" class="form-input" required placeholder="e.g., USD, BTC, USDT">
+            </div>
+
+            <div class="form-group">
+                <label for="amount" class="form-label">Amount:</label>
+                <input type="number" step="any" name="amount" id="amount" class="form-input" required placeholder="Enter amount">
+            </div>
+
+            <button type="submit" class="button primary admin-form-button">Assign Balance</button>
+        </form>
+    </div>
+
+    <div class="admin-section-card"> {# Card for the table section #}
+        <h2 class="admin-section-heading">All Users and Their Balances</h2>
+        {% if users %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User Email</th>
+                        <th>Currency</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        {% for asset in user.assets %}
+                            <tr>
+                                <td>{{ user.email }}</td>
+                                <td>{{ asset.currency }}</td>
+                                <td>{{ asset.balance | round(8) }}</td>
+                            </tr>
+                        {% endfor %}
+                        {# If a user has no assets, you might want to show them too #}
+                        {% if not user.assets %}
+                            <tr>
+                                <td>{{ user.email }}</td>
+                                <td colspan="2" class="text-muted no-data-message-cell">No assets assigned yet.</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-data-message">No users found to display balances for.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    /*
+    Re-using CSS variables defined in your layout.html or static/css/styles.css:
+    --background-color: #121212;
+    --card-background-color: #1e1e1e;
+    --text-color-primary: #f1f1f1;
+    --text-color-light: #ccc;
+    --text-color-dark: #121212;
+    --accent-color: #f9c100;
+    --accent-color-dark: #cc9d00;
+    --border-color: #333333;
+    --input-border-color: #444444;
+    --input-background-color: #2b2b2b;
+    --text-color-placeholder: #888888;
+    --header-height, --footer-height
+    */
+
+    /* Admin Dashboard Main Container (consistent) */
+    .admin-dashboard-container {
+        padding: 40px;
+        background-color: var(--background-color);
+        color: var(--text-color-primary);
+        min-height: calc(100vh - var(--header-height, 0px) - var(--footer-height, 0px));
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    /* Main page title (consistent) */
+    .admin-dashboard-title {
+        font-size: 42px;
+        color: var(--accent-color);
+        margin-bottom: 40px;
+        text-align: center;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    /* Card-like sections for content grouping (consistent) */
+    .admin-section-card {
+        background-color: var(--card-background-color);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        padding: 30px;
+        margin-bottom: 40px;
+        border: 1px solid var(--border-color);
+    }
+
+    /* Section headings (consistent) */
+    .admin-section-heading {
+        font-size: 28px;
+        color: var(--text-color-primary);
+        margin-bottom: 25px;
+        border-bottom: 2px solid var(--accent-color);
+        padding-bottom: 10px;
+        display: inline-block;
+    }
+
+    /* Form Styling (re-using existing form-group, form-label, form-input classes) */
+    .admin-form {
+        margin-top: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 16px;
+        color: var(--text-color-primary);
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid var(--input-border-color);
+        border-radius: 8px;
+        background-color: var(--input-background-color);
+        color: var(--text-color-primary);
+        font-size: 16px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-sizing: border-box; /* Include padding in width */
+    }
+
+    .form-input::placeholder {
+        color: var(--text-color-placeholder);
+    }
+
+    .form-input:focus {
+        border-color: var(--accent-color-dark);
+        box-shadow: 0 0 0 3px rgba(249, 193, 0, 0.3);
+        outline: none;
+    }
+
+    /* Specific style for select dropdown */
+    .form-select {
+        appearance: none; /* Remove default arrow */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ccc' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 16px;
+        padding-right: 40px; /* Make space for the custom arrow */
+        cursor: pointer;
+    }
+    .form-select option {
+        background-color: var(--card-background-color); /* Option background */
+        color: var(--text-color-primary); /* Option text color */
+    }
+
+
+    /* Admin Form Buttons (consistent) */
+    .admin-form-button {
+        width: auto;
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background-color: var(--accent-color);
+        color: var(--text-color-dark);
+        border: none;
+    }
+    .admin-form-button:hover {
+        background-color: var(--accent-color-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(249, 193, 0, 0.4);
+    }
+
+    /* Table Styling (consistent) */
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: var(--input-background-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .data-table th, .data-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--text-color-primary);
+        vertical-align: middle;
+    }
+
+    .data-table thead th {
+        background-color: var(--background-color);
+        color: var(--accent-color);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+    }
+
+    .data-table tbody tr:nth-child(even) {
+        background-color: var(--card-background-color);
+    }
+
+    .data-table tbody tr:hover {
+        background-color: var(--input-border-color);
+    }
+
+    .no-data-message {
+        text-align: center;
+        padding: 30px;
+        font-size: 18px;
+        color: var(--text-color-light);
+        font-style: italic;
+    }
+
+    .no-data-message-cell { /* For the specific "No assets assigned yet." cell */
+        text-align: center !important;
+        font-style: italic;
+        color: var(--text-color-light);
+    }
+
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+        .admin-dashboard-container {
+            padding: 20px;
+        }
+        .admin-dashboard-title {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+        .admin-section-heading {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .form-input {
+            padding: 10px 12px;
+            font-size: 15px;
+        }
+        .admin-form-button {
+            padding: 10px 20px;
+            font-size: 15px;
+        }
+        .data-table th, .data-table td {
+            padding: 10px;
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .admin-dashboard-title {
+            font-size: 32px;
+        }
+        .admin-section-heading {
+            font-size: 22px;
+        }
+        /* Make table cells stack for better readability on small screens */
+        .data-table th, .data-table td {
+            display: block;
+            width: 100%;
+            text-align: right;
+            box-sizing: border-box;
+        }
+        .data-table td:before {
+            content: attr(data-label);
+            float: left;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--accent-color);
+            margin-right: 10px;
+        }
+        .data-table thead {
+            display: none;
+        }
+        .data-table tbody tr {
+            display: block;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .data-table tbody tr:nth-child(even) {
+            background-color: var(--input-background-color);
+        }
+        .data-table tbody tr:hover {
+            background-color: var(--input-border-color);
+        }
+        .no-data-message-cell {
+            text-align: center !important; /* Override right alignment for this specific cell */
+            float: none !important; /* Override float */
+            width: 100% !important; /* Ensure it takes full width */
+        }
+        .no-data-message-cell:before {
+            content: none !important; /* Hide pseudo-element for this cell */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .admin-dashboard-container {
+            padding: 15px;
+        }
+        .admin-dashboard-title {
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+    }
+</style>
+{% endblock %}
