@@ -10,3 +10,4 @@ python-dotenv==1.0.0
 Flask-Reuploaded==1.4.0
 gunicorn
 Flask-Migrate
+requests
