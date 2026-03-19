@@ -11,3 +11,4 @@ Flask-Reuploaded==1.4.0
 gunicorn
 Flask-Migrate
 requests
+pycoingecko
