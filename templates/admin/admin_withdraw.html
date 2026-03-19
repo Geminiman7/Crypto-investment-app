@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block title %}Withdrawal Requests{% endblock %}
+
+{% block content %}
+<h2>Client Withdrawal Requests</h2>
+
+<table border="1" cellpadding="8">
+    <thead>
+        <tr>
+            <th>User Email</th>
+            <th>Currency</th>
+            <th>Amount</th>
+            <th>Wallet Address</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for w in withdrawals %}
+        <tr>
+            <td>{{ w.user.email }}</td>
+            <td>{{ w.currency }}</td>
+            <td>{{ w.amount }}</td>
+            <td>{{ w.wallet_address }}</td>
+            <td>{{ w.status }}</td>
+            <td>{{ w.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>
+                {% if w.status == 'pending' %}
+                <form method="POST" action="{{ url_for('admin_approve_withdrawal', withdrawal_id=w.id) }}" style="display:inline;">
+                    <button type="submit">Approve</button>
+                </form>
+                <form method="POST" action="{{ url_for('admin_reject_withdrawal', withdrawal_id=w.id) }}" style="display:inline;">
+                    <button type="submit" style="color:red;">Reject</button>
+                </form>
+                {% else %}
+                {{ w.status | capitalize }}
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7">No withdrawal requests found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

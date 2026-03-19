@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Drizz Trade Hub{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-container">
+            <a href="{{ url_for('home') }}" class="site-logo">Drizz Trade Hub</a>
+            <nav class="main-nav">
+                <input type="checkbox" id="menu-toggle" class="menu-toggle">
+                <label for="menu-toggle" class="menu-icon">&#9776;</label> <ul class="nav-links">
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('trade') }}">Market</a></li>
+                        <li><a href="{{ url_for('deposit') }}">Deposit</a></li>
+                        <li><a href="{{ url_for('withdraw') }}">Withdraw</a></li>
+                        <li><a href="{{ url_for('support') }}">Support</a></li>
+                        {% if current_user.is_admin %}
+                            <li><a href="{{ url_for('admin_kyc') }}">Admin KYC</a></li>
+                        {% endif %}
+                        <li class="auth-action"><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                        <li class="auth-action"><a href="{{ url_for('signup') }}" class="button primary">Sign Up</a></li>
+                        <li class="auth-action"><a href="{{ url_for('login') }}" class="button secondary">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content-wrapper">
+        <div class="flash-messages-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 Drizz Trade Hub. All rights reserved.</p> {# <-- Changed this line #}
+            <ul class="footer-links">
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+            <div class="social-icons">
+                </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>

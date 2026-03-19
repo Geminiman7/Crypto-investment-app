@@ -1,0 +1,271 @@
+{% extends "layout.html" %}
+{% block title %}Respond to Ticket - Astro Trade Hub{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard-container"> {# Consistent main container for admin pages #}
+    <h1 class="admin-dashboard-title">Respond to Support Ticket</h1> {# Consistent main title styling #}
+
+    <div class="admin-section-card"> {# Wrap the entire content in a card #}
+        <h2 class="admin-section-heading">Ticket Details</h2> {# Heading for the ticket details section #}
+
+        <div class="ticket-details-block"> {# New div to style the ticket details #}
+            <p><strong>Subject:</strong> <span class="ticket-subject">{{ ticket.subject }}</span></p>
+            <p><strong>User:</strong> <span class="ticket-user-email">{{ ticket.user.email }}</span></p>
+            <p><strong>Message:</strong></p>
+            <div class="ticket-message-content"> {# Styled div for the message body #}
+                <p>{{ ticket.message }}</p>
+            </div>
+        </div>
+
+        <h2 class="admin-section-heading" style="margin-top: 30px;">Your Response</h2> {# Heading for the response form #}
+
+        <form method="POST" class="admin-form"> {# Apply general form styling #}
+            <div class="form-group">
+                <label for="response" class="form-label">Response Message:</label>
+                <textarea name="response" id="response" class="form-input form-textarea" placeholder="Write your response..." required>{{ ticket.response or '' }}</textarea>
+            </div>
+            
+            <button type="submit" class="button primary admin-form-button">Send Response</button> {# Apply consistent button styling #}
+        </form>
+    </div>
+</div>
+
+<style>
+    /*
+    These styles are designed to integrate seamlessly with the CSS variables
+    you've defined in your `static/css/styles.css` (or within your `layout.html`).
+
+    Ensure these variables are correctly set:
+    --background-color: #121212;
+    --card-background-color: #1e1e1e;
+    --text-color-primary: #f1f1f1;
+    --text-color-light: #ccc;
+    --text-color-dark: #121212;
+    --accent-color: #f9c100;
+    --accent-color-dark: #cc9d00;
+    --border-color: #333333;
+    --input-border-color: #444444;
+    --input-background-color: #2b2b2b;
+    --text-color-placeholder: #888888;
+    --header-height, --footer-height (for min-height calculation)
+    */
+
+    /* Admin Dashboard Specific Styles (consistent across admin pages) */
+    .admin-dashboard-container {
+        padding: 40px;
+        background-color: var(--background-color);
+        color: var(--text-color-primary);
+        min-height: calc(100vh - var(--header-height, 0px) - var(--footer-height, 0px));
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .admin-dashboard-title {
+        font-size: 42px;
+        color: var(--accent-color);
+        margin-bottom: 40px;
+        text-align: center;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    /* Card-like section for content grouping */
+    .admin-section-card {
+        background-color: var(--card-background-color);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        padding: 30px;
+        margin-bottom: 40px;
+        border: 1px solid var(--border-color);
+        max-width: 800px; /* Max width for better readability for forms/details */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Section headings (consistent across admin pages) */
+    .admin-section-heading {
+        font-size: 28px;
+        color: var(--text-color-primary);
+        margin-bottom: 25px;
+        border-bottom: 2px solid var(--accent-color);
+        padding-bottom: 10px;
+        display: inline-block;
+    }
+
+    /* Ticket Details Specific Styling */
+    .ticket-details-block p {
+        font-size: 17px;
+        margin-bottom: 10px;
+        line-height: 1.5;
+        color: var(--text-color-light); /* Lighter color for general text */
+    }
+
+    .ticket-details-block p strong {
+        color: var(--text-color-primary); /* Stronger color for labels */
+        margin-right: 5px;
+    }
+
+    .ticket-subject {
+        color: var(--accent-color); /* Highlight subject */
+        font-weight: 600;
+    }
+
+    .ticket-user-email {
+        color: var(--text-color-primary); /* Make user email clear */
+        font-weight: 500;
+    }
+
+    .ticket-message-content {
+        background-color: var(--input-background-color); /* Darker background for message */
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+        margin-bottom: 20px; /* Space after message block */
+        color: var(--text-color-primary);
+        font-size: 16px;
+        line-height: 1.6;
+        white-space: pre-wrap; /* Preserves whitespace and wraps text */
+        word-wrap: break-word; /* Breaks long words */
+    }
+
+    /* Form Styling (re-using existing form-group, form-label, form-input classes) */
+    .admin-form {
+        margin-top: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 16px;
+        color: var(--text-color-primary);
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid var(--input-border-color);
+        border-radius: 8px;
+        background-color: var(--input-background-color);
+        color: var(--text-color-primary);
+        font-size: 16px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-sizing: border-box; /* Include padding in width */
+    }
+
+    .form-input::placeholder {
+        color: var(--text-color-placeholder);
+    }
+
+    .form-input:focus {
+        border-color: var(--accent-color-dark);
+        box-shadow: 0 0 0 3px rgba(249, 193, 0, 0.3);
+        outline: none;
+    }
+
+    /* Specific style for textarea */
+    .form-textarea {
+        resize: vertical; /* Allow vertical resizing only */
+        min-height: 150px; /* A bit more height for a response field */
+    }
+
+    /* Admin Form Buttons (consistent) */
+    .admin-form-button {
+        width: auto; /* Allow button to size to content */
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background-color: var(--accent-color);
+        color: var(--text-color-dark);
+        border: none;
+        display: block; /* Make button block level */
+        margin-top: 30px; /* Space above button */
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .admin-form-button:hover {
+        background-color: var(--accent-color-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(249, 193, 0, 0.4);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+        .admin-dashboard-container {
+            padding: 20px;
+        }
+        .admin-dashboard-title {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+        .admin-section-heading {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .admin-section-card {
+            padding: 25px;
+        }
+        .form-input, .form-textarea {
+            padding: 10px 12px;
+            font-size: 15px;
+        }
+        .admin-form-button {
+            padding: 10px 20px;
+            font-size: 15px;
+        }
+        .ticket-details-block p {
+            font-size: 16px;
+        }
+        .ticket-message-content {
+            font-size: 15px;
+            padding: 12px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .admin-dashboard-title {
+            font-size: 32px;
+        }
+        .admin-section-heading {
+            font-size: 22px;
+        }
+        .admin-section-card {
+            padding: 20px;
+            margin: 0 15px 30px; /* Adjust margins for smaller screens */
+        }
+        .ticket-details-block p {
+            font-size: 15px;
+        }
+        .ticket-message-content {
+            font-size: 14px;
+            padding: 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .admin-dashboard-container {
+            padding: 15px;
+        }
+        .admin-dashboard-title {
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+        .form-label {
+            font-size: 15px;
+        }
+        .form-input, .form-textarea {
+            font-size: 14px;
+        }
+    }
+</style>
+{% endblock %}

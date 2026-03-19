@@ -1,0 +1,194 @@
+{% extends "layout.html" %}
+{% block title %}Admin Login - Astro Trade Hub{% endblock %}
+{% block content %}
+<div class="auth-container"> {# Re-using the central container for consistency #}
+    <div class="auth-card"> {# Re-using the card styling #}
+        <h1 class="auth-title">Admin Login</h1> {# Re-using the title styling #}
+        <p class="auth-subtitle">Access the administrator dashboard.</p> {# Added a subtitle for clarity #}
+
+        {% if error %}
+            {# Using a flash message like class for consistent error display #}
+            <div class="flash-messages">
+                <li class="error">{{ error }}</li>
+            </div>
+        {% endif %}
+
+        <form method="POST" class="auth-form"> {# Re-using the form styling #}
+            <div class="form-group"> {# Re-using form group styling #}
+                <label for="username" class="form-label">Username</label> {# Re-using label styling and added for/id #}
+                <input type="text" id="username" name="username" class="form-input" required placeholder="Enter username"> {# Re-using input styling and added placeholder #}
+            </div>
+            <div class="form-group"> {# Re-using form group styling #}
+                <label for="password" class="form-label">Password</label> {# Re-using label styling and added for/id #}
+                <input type="password" id="password" name="password" class="form-input" required placeholder="Enter password"> {# Re-using input styling and added placeholder #}
+            </div>
+            <div>
+                <button type="submit" class="button primary auth-button">Login</button> {# Re-using button styling #}
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /*
+    These styles are designed to integrate seamlessly with the CSS variables
+    you've defined in your `static/css/styles.css` (or within your `layout.html`).
+
+    Ensure these variables are correctly set:
+    --background-color: #121212;
+    --card-background-color: #1e1e1e;
+    --text-color-primary: #f1f1f1;
+    --text-color-light: #ccc;
+    --text-color-dark: #121212;
+    --accent-color: #f9c100;
+    --accent-color-dark: #cc9d00;
+    --border-color: #333333;
+    --input-border-color: #444444;
+    --input-background-color: #2b2b2b;
+    --text-color-placeholder: #888888;
+    --header-height, --footer-height (for min-height calculation)
+    */
+
+    /* Re-using common styles from other auth pages for consistency */
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - var(--header-height, 0px) - var(--footer-height, 0px));
+        padding: 40px 20px;
+        background-color: var(--background-color);
+    }
+
+    .auth-card {
+        background-color: var(--card-background-color);
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        padding: 50px 40px;
+        width: 100%;
+        max-width: 450px; /* Consistent width for auth cards */
+        text-align: center;
+        border: 1px solid var(--border-color);
+    }
+
+    .auth-title {
+        font-size: 36px;
+        color: var(--accent-color);
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .auth-subtitle {
+        font-size: 18px;
+        color: var(--text-color-light);
+        margin-bottom: 30px;
+        line-height: 1.5;
+    }
+
+    .auth-form {
+        width: 100%;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        text-align: left;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 16px;
+        color: var(--text-color-primary);
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 1px solid var(--input-border-color);
+        border-radius: 8px;
+        background-color: var(--input-background-color);
+        color: var(--text-color-primary);
+        font-size: 17px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-input::placeholder {
+        color: var(--text-color-placeholder);
+    }
+
+    .form-input:focus {
+        border-color: var(--accent-color-dark);
+        box-shadow: 0 0 0 3px rgba(249, 193, 0, 0.3);
+        outline: none;
+    }
+
+    /* Error message styling (adapting from flash-messages) */
+    .flash-messages {
+        list-style-type: none;
+        padding: 10px 0;
+        margin-bottom: 20px;
+        text-align: center;
+        border-radius: 6px;
+    }
+    .flash-messages li {
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 500;
+    }
+    .flash-messages li.error, .flash-messages li.danger {
+        background-color: #dc354533;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+    }
+
+    /* Button Styling */
+    .auth-button {
+        width: 100%;
+        padding: 15px 25px;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .button.primary {
+        background-color: var(--accent-color);
+        color: var(--text-color-dark);
+        border: none;
+    }
+    .button.primary:hover {
+        background-color: var(--accent-color-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(249, 193, 0, 0.4);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .auth-card {
+            padding: 40px 25px;
+            margin: 0 15px;
+        }
+        .auth-title {
+            font-size: 30px;
+        }
+        .auth-subtitle {
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+        .form-input {
+            padding: 12px 15px;
+            font-size: 16px;
+        }
+        .auth-button {
+            padding: 14px 20px;
+            font-size: 16px;
+        }
+    }
+</style>
+{% endblock %}

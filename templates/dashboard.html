@@ -1,0 +1,413 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-wrapper">
+    <aside class="sidebar">
+        <h2>Dashboard</h2>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}" class="active">Overview</a></li>
+                <li><a href="{{ url_for('deposit') }}">Deposit</a></li>
+                <li><a href="{{ url_for('withdraw') }}">Withdraw</a></li>
+                <li><a href="{{ url_for('kyc') }}">KYC Verification</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </aside>
+
+    <main class="dashboard-main">
+        <h1>Welcome, {{ user.email.split('@')[0] | capitalize }}!</h1> <div class="dashboard-grid">
+            <section class="dashboard-card summary-card">
+                <h2>Account Summary</h2>
+                <div class="summary-items">
+                    <p><strong>Email:</strong> <span>{{ user.email }}</span></p>
+                    <p><strong>Email Confirmed:</strong> <span class="status-{{ 'green' if user.confirmed else 'red' }}">{{ 'Yes' if user.confirmed else 'No' }}</span></p>
+                    <p><strong>KYC Status:</strong>
+                        {% if user.kyc_verified %}
+                            <span class="status-green">✅ Verified</span>
+                        {% elif kyc_doc %}
+                            <span class="status-yellow">⏳ {{ kyc_doc.status | capitalize }}</span>
+                        {% else %}
+                            <span class="status-red">❌ Not Submitted</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Account Type:</strong> <span>{{ 'Admin' if user.is_admin else 'User' }}</span></p>
+                </div>
+                <div class="card-actions">
+                    {% if not user.confirmed %}
+                        <a href="{{ url_for('signup') }}" class="action-button">Resend Confirmation Email</a>
+                    {% elif not user.kyc_verified %}
+                        <a href="{{ url_for('kyc') }}" class="action-button">Complete KYC Verification</a>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="dashboard-card wallet-card">
+                <h2>Your Wallet Balances</h2>
+                {% if assets %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Currency</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for asset in assets %}
+                                <tr>
+                                    <td>{{ asset.currency }}</td>
+                                    <td>{{ asset.balance | round(8) }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="no-data-message">No balances yet. Please wait for admin funding or make a deposit request.</p>
+                {% endif %}
+            </section>
+
+            <section class="dashboard-card messages-card">
+                <h2>Recent Admin Messages</h2>
+                <ul class="message-list">
+                    {% for message in messages %}
+                        <li>
+                            <div class="message-header">
+                                <strong>{{ message.subject }}</strong>
+                                <span class="message-date">{{ message.timestamp.strftime('%Y-%m-%d') }}</span>
+                            </div>
+                            <p class="message-body">{{ message.body }}</p>
+                        </li>
+                    {% else %}
+                        <li class="no-data-message">No messages yet.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+        </div>
+    </main>
+</div>
+
+<style>
+    /* General Styles */
+    body {
+        background-color: #121212; /* Dark background */
+        color: #f1f1f1; /* Light text */
+        font-family: 'Segoe UI', Arial, sans-serif; /* Modern, readable font */
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    }
+
+    /* Dashboard Layout */
+    .dashboard-wrapper {
+        display: flex;
+        min-height: 100vh;
+        box-shadow: 0 0 15px rgba(0,0,0,0.7); /* Subtle overall shadow */
+    }
+
+    /* Sidebar */
+    .sidebar {
+        background-color: #1e1e1e; /* Slightly lighter dark for sidebar */
+        padding: 30px 20px; /* More padding for better spacing */
+        width: 250px; /* Slightly wider sidebar */
+        min-height: 100vh;
+        border-right: 1px solid #333;
+        display: flex; /* Use flexbox for sidebar content arrangement */
+        flex-direction: column; /* Stack items vertically */
+        justify-content: space-between; /* Push footer to the bottom */
+    }
+
+    .sidebar h2 {
+        font-size: 22px; /* Slightly larger heading */
+        margin-bottom: 30px; /* More space below title */
+        color: #f9c100; /* Accent color */
+        text-align: center; /* Center the dashboard title */
+    }
+
+    .sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar li {
+        margin-bottom: 12px; /* Adjusted spacing */
+    }
+
+    .sidebar a {
+        color: #ccc;
+        text-decoration: none;
+        padding: 10px 15px; /* Add padding for clickable area */
+        display: block; /* Make the whole area clickable */
+        border-radius: 5px; /* Slightly rounded corners for links */
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active { /* Active state for current page */
+        color: #1e1e1e; /* Darker text on hover/active */
+        background-color: #f9c100; /* Accent background on hover/active */
+    }
+
+    .sidebar-footer {
+        margin-top: auto; /* Pushes the footer to the bottom */
+        padding-top: 20px;
+        border-top: 1px solid #333;
+        text-align: center;
+    }
+
+    .sidebar-footer a {
+        color: #f1f1f1;
+        text-decoration: none;
+        padding: 10px 15px;
+        display: block;
+        border-radius: 5px;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .sidebar-footer a:hover {
+        background-color: #333;
+        color: #f9c100;
+    }
+
+    /* Main Content Area */
+    .dashboard-main {
+        flex: 1;
+        padding: 40px; /* More overall padding */
+        background-color: #121212;
+    }
+
+    h1 {
+        color: #f9c100;
+        font-size: 32px; /* Larger welcome heading */
+        margin-bottom: 40px; /* More space below heading */
+        text-align: center; /* Center the welcome message */
+    }
+
+    /* Dashboard Grid for Cards */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid for cards */
+        gap: 30px; /* Spacing between cards */
+    }
+
+    /* Dashboard Cards */
+    .dashboard-card {
+        background-color: #1e1e1e;
+        border-radius: 12px; /* More rounded corners */
+        padding: 25px; /* Increased padding inside cards */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.6); /* Stronger, more noticeable shadow */
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth hover effect */
+        display: flex; /* Use flexbox for card content */
+        flex-direction: column; /* Stack content vertically */
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px); /* Slight lift on hover */
+        box-shadow: 0 8px 25px rgba(0,0,0,0.7); /* Enhanced shadow on hover */
+    }
+
+    .dashboard-card h2 {
+        font-size: 24px; /* Larger card titles */
+        margin-top: 0;
+        margin-bottom: 20px; /* Space below card title */
+        color: #f9c100;
+        border-bottom: 1px solid #333; /* Subtle separator */
+        padding-bottom: 10px;
+    }
+
+    /* Account Summary Specifics */
+    .summary-card .summary-items p {
+        margin-bottom: 10px; /* Space between summary items */
+        font-size: 16px;
+    }
+
+    .summary-card .summary-items p strong {
+        color: #ccc; /* Slightly lighter for labels */
+        display: inline-block;
+        width: 150px; /* Align values */
+    }
+
+    /* Status Indicators */
+    .status-green {
+        color: #4CAF50; /* Green for success */
+        font-weight: bold;
+    }
+
+    .status-yellow {
+        color: #f9c100; /* Yellow for pending/warning */
+        font-weight: bold;
+    }
+
+    .status-red {
+        color: #F44336; /* Red for unconfirmed/not submitted */
+        font-weight: bold;
+    }
+
+    /* Action Buttons */
+    .card-actions {
+        margin-top: auto; /* Pushes action links to the bottom of the card */
+        padding-top: 15px;
+        border-top: 1px solid #333; /* Separator for actions */
+        text-align: right; /* Align buttons to the right */
+    }
+
+    .action-button { /* Renamed from action-link for clarity */
+        display: inline-block;
+        background-color: #f9c100; /* Accent color for buttons */
+        color: #1e1e1e; /* Dark text on accent button */
+        padding: 10px 20px;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 8px; /* Rounded buttons */
+        transition: background-color 0.2s ease, transform 0.2s ease;
+        font-size: 15px;
+    }
+
+    .action-button:hover {
+        background-color: #ffda47; /* Lighter accent on hover */
+        transform: translateY(-2px); /* Slight lift on hover */
+    }
+
+    /* Wallet Balances Table */
+    .dashboard-card table {
+        width: 100%;
+        border-collapse: separate; /* Use separate to allow border-radius on cells */
+        border-spacing: 0; /* Remove default spacing */
+        margin-top: 15px;
+        border-radius: 8px; /* Rounded corners for the table */
+        overflow: hidden; /* Hide overflow for rounded corners */
+    }
+
+    .dashboard-card th,
+    .dashboard-card td {
+        padding: 15px 20px; /* More padding in table cells */
+        text-align: left;
+        border-bottom: 1px solid #333;
+        color: #f1f1f1;
+    }
+
+    .dashboard-card th {
+        background-color: #2b2b2b; /* Darker header background */
+        font-weight: normal; /* Less bold for a softer look */
+        color: #f9c100; /* Accent color for table headers */
+        text-transform: uppercase; /* Uppercase for headers */
+        font-size: 14px;
+    }
+
+    .dashboard-card tbody tr:last-child td {
+        border-bottom: none; /* No border for the last row */
+    }
+
+    .dashboard-card tbody tr:hover {
+        background-color: #282828; /* Highlight row on hover */
+    }
+
+    /* No Data Messages */
+    .no-data-message {
+        text-align: center;
+        padding: 20px;
+        color: #aaa;
+        font-style: italic;
+    }
+
+    /* Admin Messages List */
+    .message-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .message-list li {
+        background-color: #282828; /* Slightly different background for messages */
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border-left: 5px solid #f9c100; /* Accent border on the left */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    }
+
+    .message-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .message-header strong {
+        color: #f9c100;
+        font-size: 18px;
+    }
+
+    .message-date {
+        color: #aaa;
+        font-size: 13px;
+    }
+
+    .message-body {
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr; /* Stack cards on smaller screens */
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-wrapper {
+            flex-direction: column;
+        }
+        .sidebar {
+            width: 100%;
+            min-height: auto; /* Allow sidebar to collapse */
+            border-right: none;
+            border-bottom: 1px solid #333;
+            padding: 20px;
+            flex-direction: row; /* Layout sidebar items horizontally */
+            justify-content: space-around;
+            align-items: center;
+        }
+        .sidebar h2 {
+            display: none; /* Hide dashboard title on small screens */
+        }
+        .sidebar nav ul {
+            display: flex; /* Make navigation links inline */
+            justify-content: center;
+            flex-wrap: wrap; /* Allow wrapping if many items */
+        }
+        .sidebar li {
+            margin: 0 10px; /* Space out horizontal links */
+        }
+        .sidebar a {
+            padding: 8px 12px;
+        }
+        .sidebar-footer {
+            display: none; /* Hide logout on very small screens or move to a dropdown */
+        }
+        .dashboard-main {
+            padding: 20px; /* Less padding on small screens */
+        }
+        h1 {
+            font-size: 26px;
+            margin-bottom: 30px;
+        }
+        .dashboard-card {
+            padding: 20px;
+        }
+        .dashboard-card h2 {
+            font-size: 20px;
+        }
+        .summary-card .summary-items p strong {
+            width: 120px; /* Adjust label width */
+        }
+    }
+</style>
+{% endblock %}
